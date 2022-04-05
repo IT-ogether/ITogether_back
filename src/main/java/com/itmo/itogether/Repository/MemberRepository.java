@@ -1,0 +1,54 @@
+package com.itmo.itogether.Repository;
+
+import com.itmo.itogether.Domain.Member;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Repository
+public class MemberRepository {
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public Member save(Member member) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("member");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", member.getId());
+        parameters.put("nickname", member.getNickname());
+        parameters.put("email", member.getEmail());
+
+        jdbcInsert.execute(parameters);
+
+        return member;
+    }
+
+    public Optional<Member> findById(Long id) {
+        List<Member> result = jdbcTemplate.query("select * from member where id = ?", memberRowMapper(), id);
+        return result.stream().findAny();
+    }
+
+    private RowMapper<Member> memberRowMapper() {
+        return (rs, rowNum) -> {
+            Member member = new Member();
+            member.setId(rs.getLong("id"));
+            member.setNickname(rs.getString("nickname"));
+            member.setEmail(rs.getString("email"));
+
+            return member;
+        };
+    }
+
+}
