@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itmo.itogether.repository.information.InformationRepositoryMapper">
+
+    <resultMap type="com.itmo.itogether.domain.Qualification" id="Qualification">
+        <id column="qualification_id" property="qualificationId" />
+        <result column="qualification_name" property="qualificationName" />
+    </resultMap>
+
+    <resultMap type="com.itmo.itogether.domain.InformationQualification" id="InformationQualification">
+        <id column="information_qualification_id" property="informationQualificationId" />
+        <result column="qualification_id2" property="qualificationId2" />
+        <result column="information_id" property="informationId" />
+        <collection property="qualification" resultMap="Qualification"/>
+    </resultMap>
+
+    <resultMap type="com.itmo.itogether.domain.Field" id="Field">
+        <id column="field_id" property="fieldId" />
+        <result column="field_name" property="fieldName" />
+    </resultMap>
+
+    <resultMap type="com.itmo.itogether.domain.RecruitmentField" id="RecruitmentField">
+        <id column="information_id" property="informationId" />
+        <result column="recruitment_field_id" property="recruitmentFieldId" />
+        <result column="field_id" property="fieldId" />
+        <collection property="field" resultMap="Field"/>
+    </resultMap>
+
+    <resultMap type="com.itmo.itogether.domain.Information" id="Information">
+        <id column="information_id" property="informationId" />
+        <result column="information_title" property="informationTitle" />
+        <result column="site_url" property="siteUrl" />
+        <result column="logo" property="logo"/>
+        <result column="recruitment_period" property="recruitmentPeriod"/>
+        <result column="activity_period" property="activityPeriod" />
+        <result column="details" property="details"/>
+        <result column="category_id" property="categoryId" />
+        <collection property="recruitmentField" resultMap="RecruitmentField"/>
+        <collection property="informationQualification" resultMap="InformationQualification"/>
+    </resultMap>
+
+    <select id="findByInfoId" parameterType="int" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.information_id = #{informationId}
+    </select>
+
+    <select id="findAllClub" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER  JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 1
+    </select>
+
+    <select id="findAllEducation" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 2
+    </select>
+
+    <select id="findAllSeminar" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 3
+    </select>
+
+    <select id="findAllCertificate" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 4
+    </select>
+
+    <select id="findAllKdt" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 5
+    </select>
+
+    <select id="findAllContest" parameterType="com.itmo.itogether.domain.Information" resultMap="Information">
+        SELECT
+        I.information_id,
+        I.information_title,
+        I.site_url,
+        I.logo,
+        I.recruitment_period,
+        I.activity_period,
+        I.details,
+        I.category_id,
+        field_id,
+        qualification_id2
+        FROM
+        information I
+
+        LEFT OUTER JOIN
+        information_qualification Q
+        ON
+        I.information_id = Q.information_id
+        LEFT OUTER JOIN
+        recruitment_field R
+        ON
+        I.information_id = R.information_id
+        WHERE
+        I.category_id = 6
+    </select>
+
+</mapper>
