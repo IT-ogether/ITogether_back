@@ -26,7 +26,7 @@ public class MemberRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("member");
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", member.getId());
+        parameters.put("member_id", member.getId());
         parameters.put("nickname", member.getNickname());
         parameters.put("email", member.getEmail());
 
@@ -36,19 +36,18 @@ public class MemberRepository {
     }
 
     public Optional<Member> findById(Long id) {
-        List<Member> result = jdbcTemplate.query("select * from member where id = ?", memberRowMapper(), id);
+        List<Member> result = jdbcTemplate.query("select * from member where member_id = ?", memberRowMapper(), id);
         return result.stream().findAny();
     }
 
     private RowMapper<Member> memberRowMapper() {
         return (rs, rowNum) -> {
             Member member = new Member();
-            member.setId(rs.getLong("id"));
+            member.setId(rs.getLong("member_id"));
             member.setNickname(rs.getString("nickname"));
             member.setEmail(rs.getString("email"));
 
             return member;
         };
     }
-
 }

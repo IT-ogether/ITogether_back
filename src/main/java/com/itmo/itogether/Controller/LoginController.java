@@ -45,10 +45,9 @@ public class LoginController {
 
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
 
-        if(isMemberPresent == false) {
+        if (isMemberPresent == false) {
             ms.join(member);
-        }
-        else {
+        } else {
             System.out.println("The member is already sign up");
         }
 

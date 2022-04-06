@@ -20,6 +20,7 @@ public class JwtUtils {
 
     private final String SECRET_KEY = ""; // 설정 필요
     private final String REFRESH_KEY = ""; // 설정 필요
+
     public String createJwt(Member member) {
 
         Map<String, Object> headers = new HashMap<>();

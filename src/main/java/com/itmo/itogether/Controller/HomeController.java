@@ -1,7 +1,7 @@
 package com.itmo.itogether.Controller;
 
 import com.itmo.itogether.Domain.Information;
-import com.itmo.itogether.Service.InformationService;
+import com.itmo.itogether.Service.InformationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,10 +18,10 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class HomeController {
 
-    private final InformationService informationService;
+    private final InformationServiceImpl informationService;
 
     @Autowired
-    public HomeController(InformationService informationService) {
+    public HomeController(InformationServiceImpl informationService) {
         this.informationService = informationService;
     }
 

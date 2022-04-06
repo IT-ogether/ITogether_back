@@ -1,30 +1,28 @@
 package com.itmo.itogether.Service;
 
+import com.itmo.itogether.DTO.DetailInformationDTO;
+import com.itmo.itogether.DTO.MainInformationDTO;
+import com.itmo.itogether.DTO.ReviewDTO;
 import com.itmo.itogether.Domain.Information;
-import com.itmo.itogether.Repository.InformationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class InformationService {
+public interface InformationService {
+    List<Information> findPopularInfo();
 
-    private final InformationRepository informationRepository;
+    List<MainInformationDTO> findAllClub();
 
-    @Autowired
-    public InformationService(InformationRepository informationRepository) {
-        this.informationRepository = informationRepository;
-    }
+    List<MainInformationDTO> findAllEducation();
 
+    List<MainInformationDTO> findAllSeminar();
 
-    public List<Information> findPopularInfo() {
-        System.out.println(informationRepository.findPopularInformation());
+    List<MainInformationDTO> findAllCertificate();
 
-        return informationRepository.findPopularInformation();
-    }
+    List<MainInformationDTO> findAllKdt();
 
+    List<MainInformationDTO> findAllContest();
 
+    DetailInformationDTO findByInfoId(int informationId);
 
-
+    List<ReviewDTO> findReviewById(int informationId);
 }

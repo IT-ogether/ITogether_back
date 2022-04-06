@@ -1,44 +1,29 @@
 package com.itmo.itogether.Repository;
 
+import com.itmo.itogether.DTO.DetailInformationDTO;
+import com.itmo.itogether.DTO.MainInformationDTO;
+import com.itmo.itogether.DTO.ReviewDTO;
 import com.itmo.itogether.Domain.Information;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
-@Repository
-public class InformationRepository {
+public interface InformationRepository {
 
-    private JdbcTemplate jdbcTemplate;
+    List<Information> findPopularInformation();
 
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    DetailInformationDTO findByInfoId(int informationId);
 
-    public List<Information> findPopularInformation() {
+    List<MainInformationDTO> findAllClub();
 
-        return jdbcTemplate.query("select information_id, information_title, logo " +
-                "from information " +
-                "where information_id = 11 or information_id = 21 or information_id = 37 or information_id = 45 or information_id = 59 or information_id = 63;", popularInformationRowMapper());
-    }
+    List<MainInformationDTO> findAllEducation();
 
-    private RowMapper<Information> popularInformationRowMapper() {
-        return (rs, rowNum) -> {
-            Information information = new Information();
-            information.setInformationId(rs.getInt("information_id"));
-            information.setInformationTitle(rs.getString("information_title"));
-            //information.setSiteUrl(rs.getString("site_url"));
-            information.setLogo(rs.getString("logo"));
-            //information.setRecruitmentPeriod(rs.getString("recruitment_period"));
-            //information.setActivityPeriod((rs.getString("activity_period")));
-            //information.setDetails(rs.getString("details"));
-            //information.setCategoryId(rs.getInt("categoryId"));
+    List<MainInformationDTO> findAllSeminar();
 
-            return information;
-        };
-    }
+    List<MainInformationDTO> findAllCertificate();
+
+    List<MainInformationDTO> findAllKdt();
+
+    List<MainInformationDTO> findAllContest();
+
+    List<ReviewDTO> findReviewById(int informationId);
 }
