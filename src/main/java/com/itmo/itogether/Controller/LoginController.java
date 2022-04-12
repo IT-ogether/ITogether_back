@@ -6,10 +6,7 @@ import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
 import com.itmo.itogether.Service.RedisRefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -38,16 +35,17 @@ public class LoginController {
         HashMap<String, Object> userInfo = ms.getUserInfo(accessToken);
 
         Member member = new Member();
-        member.setId(Long.parseLong(userInfo.get("id").toString()));
+        member.setId(Long.parseLong(userInfo.get("id").toString())-10000);
         member.setNickname(userInfo.get("nickname").toString());
         member.setEmail(userInfo.get("email").toString());
-
+        member.setProfileImage(userInfo.get("profileImage").toString());
 
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
 
-        if (isMemberPresent == false) {
+        if(isMemberPresent == false) {
             ms.join(member);
-        } else {
+        }
+        else {
             System.out.println("The member is already sign up");
         }
 
@@ -55,15 +53,37 @@ public class LoginController {
         String refreshToken = jwtUtils.createRefreshToken(member);
 
         Map<String, Object> tokens = new HashMap<>();
-        tokens.put("memberId", member.getId());
-        tokens.put("nickName", member.getNickname());
-        tokens.put("email", member.getEmail());
         tokens.put("jwtAccessToken", jwtAccessToken);
-        tokens.put("refreshToken", refreshToken);
 
         redisRefreshTokenService.setRedisRefreshTokenValue(refreshToken, member.getNickname());
 
         return tokens;
+    }
+
+    @GetMapping("/refresh")
+    public Map<String, Object> Refresh(@RequestHeader(value="RefreshToken") String refreshToken) {
+
+        if(redisRefreshTokenService.isExistRefreshToken(refreshToken)) {
+            String id = jwtUtils.getIdFromToken(refreshToken);
+
+            Member member = new Member();
+            member.setId(ms.findMemberById(Long.parseLong(id)).get().getId());
+            member.setNickname(ms.findMemberById(Long.parseLong(id)).get().getNickname());
+            member.setEmail(ms.findMemberById(Long.parseLong(id)).get().getEmail());
+
+            String jwtAccessToken = jwtUtils.createJwt(member);
+
+            Map<String, Object> token = new HashMap<>();
+            token.put("jwtAcceessToken", jwtAccessToken);
+
+            return token;
+        }
+        else {
+            Map<String, Object> token = new HashMap<>();
+            token.put("fail", "fail");
+            return token;
+        }
+
     }
 
 

@@ -25,8 +25,8 @@ import java.util.Optional;
 @Service
 public class MemberService {
 
-    String clientId = ""; // 설정 필요
-    String redirectUri = "~~~/oauth/kakao/callback"; // 설정 필요
+    String clientId = "47ab909f259ea3b830cda220244509c2"; // 설정 필요
+    String redirectUri = "https://dfb5-106-101-3-104.ngrok.io/oauth/kakao/callback"; // 설정 필요
     String reqTokenUrl = "https://kauth.kakao.com/oauth/token";
     String reqUserDataUrl = "https://kapi.kakao.com/v2/user/me";
 
@@ -112,10 +112,12 @@ public class MemberService {
         String id = element.getAsJsonObject().get("id").getAsString();
         String nickname = properties.getAsJsonObject().get("nickname").getAsString();
         String email = kakao_account.getAsJsonObject().get("email").getAsString();
+        String profileImage = properties.getAsJsonObject().get("profile_image").getAsString();
 
         userInfo.put("id", id);
         userInfo.put("nickname", nickname);
         userInfo.put("email", email);
+        userInfo.put("profileImage", profileImage);
 
         return userInfo;
     }

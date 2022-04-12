@@ -4,6 +4,15 @@ public class Member {
     private Long id;
     private String nickname;
     private String email;
+    private String profileImage;
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
     public Long getId() {
         return id;
