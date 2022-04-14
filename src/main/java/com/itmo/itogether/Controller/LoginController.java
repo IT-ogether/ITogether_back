@@ -31,7 +31,15 @@ public class LoginController {
     @PostMapping("/oauth/kakao/login")
     public Map<String, Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
 
+        System.out.println("authorizationCode: " + code);
+        System.err.println("authorizationCode: " + code);
+
+        System.out.println("getAccessToken 진입 전");
+        System.err.println("getAccessToken 진입 전");
         String accessToken = ms.getAccessToken(code);
+        System.out.println("getAccessToken 진입 후 받아 온 accessToken: " + accessToken);
+        System.err.println("getAccessToken 진입 후 받아 온 accessToken: " + accessToken);
+
         HashMap<String, Object> userInfo = ms.getUserInfo(accessToken);
 
         Member member = new Member();
@@ -43,6 +51,7 @@ public class LoginController {
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
 
         if(isMemberPresent == false) {
+            System.out.println("");
             ms.join(member);
         }
         else {
