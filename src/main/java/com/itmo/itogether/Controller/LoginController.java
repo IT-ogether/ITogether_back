@@ -25,8 +25,8 @@ public class LoginController {
         this.jwtUtils = jwtUtils;
     }
 
-    @Autowired
-    private RedisRefreshTokenService redisRefreshTokenService;
+//    @Autowired
+//    private RedisRefreshTokenService redisRefreshTokenService;
 
     @PostMapping("/oauth/kakao/login")
     public Map<String, Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
@@ -50,41 +50,41 @@ public class LoginController {
         }
 
         String jwtAccessToken = jwtUtils.createJwt(member);
-        String refreshToken = jwtUtils.createRefreshToken(member);
+        //String refreshToken = jwtUtils.createRefreshToken(member);
 
         Map<String, Object> tokens = new HashMap<>();
         tokens.put("jwtAccessToken", jwtAccessToken);
 
-        redisRefreshTokenService.setRedisRefreshTokenValue(refreshToken, member.getNickname());
+        //redisRefreshTokenService.setRedisRefreshTokenValue(refreshToken, member.getNickname());
 
         return tokens;
     }
 
-    @GetMapping("/refresh")
-    public Map<String, Object> Refresh(@RequestHeader(value="RefreshToken") String refreshToken) {
-
-        if(redisRefreshTokenService.isExistRefreshToken(refreshToken)) {
-            String id = jwtUtils.getIdFromToken(refreshToken);
-
-            Member member = new Member();
-            member.setId(ms.findMemberById(Long.parseLong(id)).get().getId());
-            member.setNickname(ms.findMemberById(Long.parseLong(id)).get().getNickname());
-            member.setEmail(ms.findMemberById(Long.parseLong(id)).get().getEmail());
-
-            String jwtAccessToken = jwtUtils.createJwt(member);
-
-            Map<String, Object> token = new HashMap<>();
-            token.put("jwtAcceessToken", jwtAccessToken);
-
-            return token;
-        }
-        else {
-            Map<String, Object> token = new HashMap<>();
-            token.put("fail", "fail");
-            return token;
-        }
-
-    }
+//    @GetMapping("/refresh")
+//    public Map<String, Object> Refresh(@RequestHeader(value="RefreshToken") String refreshToken) {
+//
+//        if(redisRefreshTokenService.isExistRefreshToken(refreshToken)) {
+//            String id = jwtUtils.getIdFromToken(refreshToken);
+//
+//            Member member = new Member();
+//            member.setId(ms.findMemberById(Long.parseLong(id)).get().getId());
+//            member.setNickname(ms.findMemberById(Long.parseLong(id)).get().getNickname());
+//            member.setEmail(ms.findMemberById(Long.parseLong(id)).get().getEmail());
+//
+//            String jwtAccessToken = jwtUtils.createJwt(member);
+//
+//            Map<String, Object> token = new HashMap<>();
+//            token.put("jwtAcceessToken", jwtAccessToken);
+//
+//            return token;
+//        }
+//        else {
+//            Map<String, Object> token = new HashMap<>();
+//            token.put("fail", "fail");
+//            return token;
+//        }
+//
+//    }
 
 
 }
