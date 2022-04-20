@@ -6,9 +6,13 @@ import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
 import com.itmo.itogether.Service.RedisRefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,17 +23,19 @@ public class LoginController {
     private final MemberService ms;
     private final JwtUtils jwtUtils;
 
+    private static int refreshTokenIndex = 0;
+
     @Autowired
     public LoginController(MemberService ms, JwtUtils jwtUtils) {
         this.ms = ms;
         this.jwtUtils = jwtUtils;
     }
 
-//    @Autowired
-//    private RedisRefreshTokenService redisRefreshTokenService;
+    @Autowired
+    private RedisRefreshTokenService redisRefreshTokenService;
 
     @PostMapping("/oauth/kakao/login")
-    public Map<String, Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
+    public ResponseEntity<Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
 
         System.out.println("authorizationCode: " + code);
         System.err.println("authorizationCode: " + code);
@@ -51,7 +57,6 @@ public class LoginController {
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
 
         if(isMemberPresent == false) {
-            System.out.println("");
             ms.join(member);
         }
         else {
@@ -59,14 +64,21 @@ public class LoginController {
         }
 
         String jwtAccessToken = jwtUtils.createJwt(member);
-        //String refreshToken = jwtUtils.createRefreshToken(member);
+        String refreshToken = jwtUtils.createRefreshToken(member);
 
-        Map<String, Object> tokens = new HashMap<>();
-        tokens.put("jwtAccessToken", jwtAccessToken);
+        redisRefreshTokenService.setRedisRefreshTokenValue(++refreshTokenIndex, refreshToken);
+        System.out.println("refreshTokenIndex: " + refreshTokenIndex);
+        System.out.println("refreshToken: " + refreshToken);
 
-        //redisRefreshTokenService.setRedisRefreshTokenValue(refreshToken, member.getNickname());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("jwtAccessToken", jwtAccessToken);
+        headers.set("refreshTokenIndex", String.valueOf(refreshTokenIndex));
 
-        return tokens;
+        System.out.println("headers" + headers);
+        System.out.println("headers jwtAccessToken" + headers.get("jwtAccessToken"));
+        System.out.println("headers refreshTokenIndex" + headers.get("refreshTokenIndex"));
+
+        return new ResponseEntity<>("로그인 성공", headers, 200);
     }
 
 //    @GetMapping("/refresh")
