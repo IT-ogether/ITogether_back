@@ -5,6 +5,7 @@ import com.itmo.itogether.DTO.GetMarkResponse;
 import com.itmo.itogether.Service.BookMarkService;
 import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProfileController {
 
@@ -31,16 +33,14 @@ public class ProfileController {
     @GetMapping("/profile")
     public Map<String, Object> Profile(@RequestHeader(value = "token") String token) throws SQLException {
 
-        System.out.println(token);
+        log.info(token);
         if(jwtUtils.validateToken(token)) {
-            System.out.println("검증완료");
+            log.info("검증완료");
             String nickName = "";
             String email = "";
             String profileImage = "";
 
             String id = jwtUtils.getIdFromToken(token);
-            System.out.println(id);
-
 
             nickName = String.valueOf(ms.findMemberById(Long.parseLong(id)).get().getNickname());
             email = String.valueOf(ms.findMemberById(Long.parseLong(id)).get().getEmail());
