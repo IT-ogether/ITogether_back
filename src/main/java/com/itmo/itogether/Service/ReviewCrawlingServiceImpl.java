@@ -21,7 +21,7 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
         List<ReviewDTO> reviewDTO = new ArrayList<ReviewDTO>();
 
         for (InformationDTO information : informationDTO) {
-            String REVIEWURL = null;
+            String REVIEWURL;
 
             if (String.valueOf(information.getInformationId()).charAt(0) == '1') {
                 REVIEWURL = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + information.getInformationTitle() + " 동아리 후기";
@@ -32,6 +32,7 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
 
             Document doc = Jsoup.connect(REVIEWURL).get();
             Elements contents = doc.select("#main_pack div.total_area > a");
+            System.out.println(contents.size());
 
             for (Element content : contents) {
                 String title = content.text();
@@ -40,32 +41,32 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
                 if (String.valueOf(information.getInformationId()).charAt(0) == '1') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && title.contains("동아리")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '2') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("교육") || title.contains("강의") || title.contains("합격"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '3') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("세미나") || title.contains("참관") || title.contains("방문"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '4') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("독학") || title.contains("자격증"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '5') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("수료") || title.contains("챌린지"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 } else {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "naver"));
                     }
                 }
             }
@@ -76,61 +77,58 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
     @Override
     public List<ReviewDTO> getTistoryReviews(List<InformationDTO> informationDTO) throws IOException {
         List<ReviewDTO> reviewDTO = new ArrayList<ReviewDTO>();
+        int count = 0;
 
         for (InformationDTO information : informationDTO) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(2200);
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
             String REVIEWURL = "https://www.google.com/search?q=" + information.getInformationTitle() + " 후기 site:tistory.com";
-
-            Document doc = Jsoup.connect(REVIEWURL)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
-                    .get();
-
+            Document doc = Jsoup.connect(REVIEWURL).get();
             Elements contents = doc.select("#rso div.NJo7tc.Z26q7c.jGGQ5e > div > a");
+
+            System.out.println(contents.size());
 
             for (Element content : contents) {
                 String title = content.text();
                 String url = content.attr("href");
 
+                System.out.println("check " + count + " content");
+                count++;
+
                 if (String.valueOf(information.getInformationId()).charAt(0) == '1') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && title.contains("동아리")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '2') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("교육") || title.contains("강의") || title.contains("합격"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '3') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("세미나") || title.contains("참관") || title.contains("방문"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '4') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("독학") || title.contains("자격증"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '5') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("수료") || title.contains("챌린지"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 } else {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "tistory"));
                     }
                 }
-                try {
-                    TimeUnit.MILLISECONDS.sleep(2200);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
+            }
+            try {
+                TimeUnit.SECONDS.sleep(62);
+            } catch (InterruptedException e) {
+                System.out.println(e);
             }
         }
 
@@ -140,13 +138,9 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
     @Override
     public List<ReviewDTO> getVelogReviews(List<InformationDTO> informationDTO) throws IOException {
         List<ReviewDTO> reviewDTO = new ArrayList<ReviewDTO>();
+        int count = 0;
 
         for (InformationDTO information : informationDTO) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(2200);
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
             String REVIEWURL = "https://www.google.com/search?q=" + information.getInformationTitle() + " 후기 site:velog.io";
 
             Document doc = Jsoup.connect(REVIEWURL).get();
@@ -156,42 +150,45 @@ public class ReviewCrawlingServiceImpl implements ReviewCrawlingService {
                 String title = content.text();
                 String url = content.attr("href");
 
+                System.out.println("check " + count + " content");
+                count++;
+
                 if (String.valueOf(information.getInformationId()).charAt(0) == '1') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && title.contains("동아리")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '2') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("교육") || title.contains("강의") || title.contains("합격"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '3') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("세미나") || title.contains("참관") || title.contains("방문"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '4') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("독학") || title.contains("자격증"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 } else if (String.valueOf(information.getInformationId()).charAt(0) == '5') {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기") && (title.contains("합격") || title.contains("수료") || title.contains("챌린지"))) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 } else {
                     if (title.contains(information.getInformationTitle()) && title.contains("후기")) {
                         System.out.println("후기 제목: " + title + " 링크: " + url + "\n");
-                        reviewDTO.add(new ReviewDTO(null, information.getInformationId(), title, url, "naver"));
+                        reviewDTO.add(new ReviewDTO(information.getInformationId(), title, url, "velog"));
                     }
                 }
-                try {
-                    TimeUnit.MILLISECONDS.sleep(2200);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
+            }
+            try {
+                TimeUnit.SECONDS.sleep(62);
+            } catch (InterruptedException e) {
+                System.out.println(e);
             }
         }
         return reviewDTO;

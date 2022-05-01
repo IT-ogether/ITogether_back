@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReviewCrawlingRepository {
     void insertReviews() throws IOException;
     List<InformationDTO> findAllInfo();
+    void deleteRedundancy();
 }

@@ -1,16 +1,21 @@
 package com.itmo.itogether.DTO;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReviewDTO {
-    private Integer review_id;
+    private int review_id;
+    @NonNull
     private int information_id;
+    @NonNull
     private String title;
+    @NonNull
     private String url;
+    @NonNull
     private String site;
 }
