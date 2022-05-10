@@ -1,12 +1,13 @@
 package com.itmo.itogether.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class FavorFieldDTO {
-    private List<String> fields;
+    private String field;
+
 }

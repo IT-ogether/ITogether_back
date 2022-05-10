@@ -1,12 +1,10 @@
 package com.itmo.itogether.Service;
 
-import com.itmo.itogether.DTO.CountDTO;
 import com.itmo.itogether.DTO.FavorFieldDTO;
 import com.itmo.itogether.Domain.CountShare;
 import com.itmo.itogether.Repository.CountRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,9 +21,9 @@ public class CountService {
         return countRepository.findCountByInformationId(informationId);
     }
 
-    public List<FavorFieldDTO> findFields(Long memberId) {
+    public FavorFieldDTO findField(Long memberId) {
 
-        return countRepository.findFields(memberId);
+        return countRepository.findField(memberId);
     }
 
     public Integer updateOnlySumCount(CountShare countShare) {

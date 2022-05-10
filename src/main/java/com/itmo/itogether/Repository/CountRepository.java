@@ -1,6 +1,5 @@
 package com.itmo.itogether.Repository;
 
-import com.itmo.itogether.DTO.CountDTO;
 import com.itmo.itogether.DTO.FavorFieldDTO;
 import com.itmo.itogether.Domain.CountShare;
 import lombok.extern.slf4j.Slf4j;
@@ -72,29 +71,20 @@ public class CountRepository {
 
     }
 
-    public List<FavorFieldDTO> findFields(Long memberId) {
+    public FavorFieldDTO findField(Long memberId) {
         log.info("dto={}", favorFieldDTORowMapper());
-        return jdbcTemplate.query("select group_concat(favor_field_name) as fields from member_field where member_id = ?", favorFieldDTORowMapper(), memberId);
+        FavorFieldDTO favorFieldDTO = jdbcTemplate.queryForObject("select favor_field_name from member_field where member_id = ?", favorFieldDTORowMapper(), memberId);
+        return favorFieldDTO;
     }
 
     private RowMapper<FavorFieldDTO> favorFieldDTORowMapper() {
         return (rs, rowNum) -> {
 
+            String field = rs.getString("favor_field_name");
+            log.info("field={}", field);
+            FavorFieldDTO favorFieldDTO = new FavorFieldDTO(field);
 
-            try {
-                List<String> fields = List.of(rs.getString("fields").split(","));
-                log.info("fields={}", fields);
-                FavorFieldDTO favorFieldDTO = new FavorFieldDTO(fields);
-
-                return favorFieldDTO;
-
-            } catch(NullPointerException e) {
-                String[] emptyField = new String[0];
-                FavorFieldDTO favorFieldDTO = new FavorFieldDTO(List.of(emptyField));
-                log.info("fields={}", List.of(emptyField));
-
-                return favorFieldDTO;
-            }
+            return favorFieldDTO;
         };
     }
 
