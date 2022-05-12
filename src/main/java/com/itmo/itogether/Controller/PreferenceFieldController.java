@@ -32,8 +32,6 @@ public class PreferenceFieldController {
             log.info("field={}", field);
             log.info("nowField={}", preferenceFieldService.findField(Long.parseLong(memberId)).getField());
 
-
-
             if(preferenceFieldService.findField(Long.parseLong(memberId)).getField() == null) {
                 // 선택 없는 경우
                 PostField postField = new PostField(Long.parseLong(memberId), field);
@@ -47,11 +45,9 @@ public class PreferenceFieldController {
                     PostField postField = new PostField(Long.parseLong(memberId), field);
                     preferenceFieldService.postField(postField);
                 }
-
             }
 
             return new ResponseEntity<>("Success", HttpStatus.OK);
-
 
         } else {
             return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
