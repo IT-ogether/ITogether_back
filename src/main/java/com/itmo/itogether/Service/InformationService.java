@@ -2,8 +2,8 @@ package com.itmo.itogether.Service;
 
 import com.itmo.itogether.DTO.DetailInformationDTO;
 import com.itmo.itogether.DTO.MainInformationDTO;
-import com.itmo.itogether.DTO.ReviewDTO;
 import com.itmo.itogether.Domain.Information;
+import com.itmo.itogether.Domain.Review;
 
 import java.util.List;
 
@@ -24,5 +24,7 @@ public interface InformationService {
 
     DetailInformationDTO findByInfoId(int informationId);
 
-    List<ReviewDTO> findReviewById(int informationId);
+    List<Review> findReviewById(int informationId);
+
+    List<MainInformationDTO> searchKeyword(String keyword);
 }
