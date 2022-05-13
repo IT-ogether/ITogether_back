@@ -9,4 +9,3 @@ spring:
     config-location: classpath*:mybatis-config.xml
     mapper-location: classpath*:mapper/*.xml
     type-aliases-package: com.itmo.itogether.Domain
-    configuration: map-underscore-to-camel-case=true

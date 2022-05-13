@@ -29,6 +29,7 @@ public class MemberRepository {
         parameters.put("member_id", member.getId());
         parameters.put("nickname", member.getNickname());
         parameters.put("email", member.getEmail());
+        parameters.put("profile_image", member.getProfileImage());
 
         jdbcInsert.execute(parameters);
 
@@ -46,6 +47,7 @@ public class MemberRepository {
             member.setId(rs.getLong("member_id"));
             member.setNickname(rs.getString("nickname"));
             member.setEmail(rs.getString("email"));
+            member.setProfileImage(rs.getString("profile_image"));
 
             return member;
         };

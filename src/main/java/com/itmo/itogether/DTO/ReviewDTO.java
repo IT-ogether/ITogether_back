@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class ReviewDTO {
-    private int review_id;
+    private int reviewId;
     @NonNull
-    private int information_id;
+    private int informationId;
     @NonNull
     private String title;
     @NonNull

@@ -10,6 +10,7 @@ import com.itmo.itogether.Domain.Member;
 import com.itmo.itogether.Model.OAuthToken;
 import com.itmo.itogether.Repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,10 +26,17 @@ import java.util.Optional;
 @Service
 public class MemberService {
 
-    String clientId = ""; // 설정 필요
-    String redirectUri = "~~~/oauth/kakao/callback"; // 설정 필요
-    String reqTokenUrl = "https://kauth.kakao.com/oauth/token";
-    String reqUserDataUrl = "https://kapi.kakao.com/v2/user/me";
+    @Value("${kakao.clientId}")
+    private String clientId;
+
+    @Value("${kakao.redirectUri}")
+    private String redirectUri;
+
+    @Value("${kakao.reqTokenUrl}")
+    private String reqTokenUrl;
+
+    @Value("${kakao.reqUserDataUrl}")
+    private String reqUserDataUrl;
 
     private final MemberRepository memberRepository;
 
@@ -107,15 +115,17 @@ public class MemberService {
         JsonElement element = parser.parse(response2.getBody());
 
         JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-        JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+        JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 
         String id = element.getAsJsonObject().get("id").getAsString();
         String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-        String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
+        String email = kakao_account.getAsJsonObject().get("email").getAsString();
+        String profileImage = properties.getAsJsonObject().get("profile_image").getAsString();
 
         userInfo.put("id", id);
         userInfo.put("nickname", nickname);
         userInfo.put("email", email);
+        userInfo.put("profileImage", profileImage);
 
         return userInfo;
     }
@@ -124,4 +134,4 @@ public class MemberService {
 
         return memberRepository.findById(memberId);
     }
-}
+
