@@ -32,8 +32,8 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
         List<ReviewDTO> reviewDTO = new ArrayList<>();
 
         reviewDTO.addAll(reviewCrawlingService.getNaverReviews(informationDTO));
-        reviewDTO.addAll(reviewCrawlingService.getTistoryReviews(informationDTO));
-        reviewDTO.addAll(reviewCrawlingService.getVelogReviews(informationDTO));
+//        reviewDTO.addAll(reviewCrawlingService.getTistoryReviews(informationDTO));
+//        reviewDTO.addAll(reviewCrawlingService.getVelogReviews(informationDTO));
 
 
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

@@ -27,6 +27,6 @@ public interface InformationService {
     List<Review> findReviewById(int informationId);
 
     List<MainInformationDTO> searchKeyword(String keyword);
-
+  
     int countInfo(int categoryId);
 }

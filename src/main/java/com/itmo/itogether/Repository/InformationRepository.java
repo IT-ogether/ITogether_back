@@ -29,6 +29,7 @@ public interface InformationRepository {
 
     List<MainInformationDTO> searchKeyword(String keyword);
 
+
     int countClubInfo();
 
     int countEducationInfo();
