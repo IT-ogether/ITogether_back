@@ -4,9 +4,3 @@ spring:
     username: **
     password: **
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-  mybatis:
-    config-location: classpath*:mybatis-config.xml
-    mapper-location: classpath*:mapper/*.xml
-    type-aliases-package: com.itmo.itogether.Domain
-    configuration: map-underscore-to-camel-case=true

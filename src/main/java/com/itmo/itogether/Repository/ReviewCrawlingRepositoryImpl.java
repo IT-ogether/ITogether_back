@@ -26,7 +26,7 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
     }
 
     @Override
-    @PostConstruct
+//    @PostConstruct
     public void insertReviews() throws IOException {
         List<InformationDTO> informationDTO = findAllInfo();
         List<ReviewDTO> reviewDTO = new ArrayList<>();
@@ -43,11 +43,12 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
             SqlParameterSource params = new BeanPropertySqlParameterSource(review);
             jdbcInsert.execute(params);
         }
+        deleteRedundancy(); // 중복 제거
     }
 
     @Override
     public List<InformationDTO> findAllInfo() {
-        return jdbcTemplate.query("SELECT information_id, information_title from information", allInfoRowMapper());
+        return jdbcTemplate.query("SELECT information_id, information_title FROM information WHERE is_crawled = 0", allInfoRowMapper());
     }
 
     private RowMapper<InformationDTO> allInfoRowMapper() {
@@ -58,5 +59,10 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
 
             return informationDTO;
         };
+    }
+
+    @Override
+    public void deleteRedundancy() {
+        jdbcTemplate.execute("DELETE FROM review WHERE review_id NOT IN ( SELECT review_id FROM ( SELECT review_id FROM review GROUP BY title) AS review_id)");
     }
 }
