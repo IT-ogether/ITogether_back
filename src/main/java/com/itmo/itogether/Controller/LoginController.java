@@ -6,17 +6,14 @@ import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
 import com.itmo.itogether.Service.RedisRefreshTokenService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @Slf4j
@@ -27,7 +24,7 @@ public class LoginController {
     private final JwtUtils jwtUtils;
     private RedisRefreshTokenService redisRefreshTokenService;
 
-    private static Long refreshTokenIndex = 0L;
+    private static int refreshTokenIndex = 0;
 
     public LoginController(MemberService ms, JwtUtils jwtUtils, RedisRefreshTokenService redisRefreshTokenService) {
         this.ms = ms;
@@ -63,7 +60,10 @@ public class LoginController {
         String jwtAccessToken = jwtUtils.createJwt(member);
         String refreshToken = jwtUtils.createRefreshToken(member);
 
-        redisRefreshTokenService.setRedisRefreshTokenValue(Math.toIntExact(++refreshTokenIndex), refreshToken);
+        AtomicInteger count = new AtomicInteger(refreshTokenIndex);
+        redisRefreshTokenService.setRedisRefreshTokenValue(count.getAndIncrement(), refreshToken);
+        refreshTokenIndex = count.get();
+
         log.info("refreshTokenIndex = {}", refreshTokenIndex);
         log.info("refreshToken = {}" + refreshToken);
 
@@ -77,32 +77,4 @@ public class LoginController {
 
         return new ResponseEntity<>("로그인 성공", headers, HttpStatus.OK);
     }
-
-//    @GetMapping("/refresh")
-//    public Map<String, Object> Refresh(@RequestHeader(value="RefreshToken") String refreshToken) {
-//
-//        if(redisRefreshTokenService.isExistRefreshToken(refreshToken)) {
-//            String id = jwtUtils.getIdFromToken(refreshToken);
-//
-//            Member member = new Member();
-//            member.setId(ms.findMemberById(Long.parseLong(id)).get().getId());
-//            member.setNickname(ms.findMemberById(Long.parseLong(id)).get().getNickname());
-//            member.setEmail(ms.findMemberById(Long.parseLong(id)).get().getEmail());
-//
-//            String jwtAccessToken = jwtUtils.createJwt(member);
-//
-//            Map<String, Object> token = new HashMap<>();
-//            token.put("jwtAcceessToken", jwtAccessToken);
-//
-//            return token;
-//        }
-//        else {
-//            Map<String, Object> token = new HashMap<>();
-//            token.put("fail", "fail");
-//            return token;
-//        }
-//
-//    }
-
-
 }
