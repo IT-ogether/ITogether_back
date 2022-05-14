@@ -91,7 +91,7 @@ public class InformationRepositoryImpl implements InformationRepository {
     @Override
     public List<Review> findReviewById(int informationId) {
         return jdbcTemplate.query(
-                String.format("SELECT review.title, review.url, review.site FROM review WHERE review.information_id = ?", informationId), ReviewMapper());
+                String.format("SELECT review.title, review.url, review.site FROM review WHERE review.information_id In (%s);", informationId), ReviewMapper());
     }
 
     private RowMapper<Review> ReviewMapper() {
