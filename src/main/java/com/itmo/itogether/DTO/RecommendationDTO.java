@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class RecommendationDTO {
     int informationId;
-    String informationTitle;
+    String title;
     String logo;
 }
