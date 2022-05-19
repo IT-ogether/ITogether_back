@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itmo.itogether.Domain.Member;
 import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
+import com.itmo.itogether.Service.PreferenceFieldService;
 import com.itmo.itogether.Service.RedisRefreshTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,13 +24,15 @@ public class LoginController {
     private final MemberService ms;
     private final JwtUtils jwtUtils;
     private RedisRefreshTokenService redisRefreshTokenService;
+    private PreferenceFieldService preferenceFieldService;
 
     private static int refreshTokenIndex = 0;
 
-    public LoginController(MemberService ms, JwtUtils jwtUtils, RedisRefreshTokenService redisRefreshTokenService) {
+    public LoginController(MemberService ms, JwtUtils jwtUtils, RedisRefreshTokenService redisRefreshTokenService, PreferenceFieldService preferenceFieldService) {
         this.ms = ms;
         this.jwtUtils = jwtUtils;
         this.redisRefreshTokenService = redisRefreshTokenService;
+        this.preferenceFieldService = preferenceFieldService;
     }
 
     @PostMapping("/oauth/kakao/login")
@@ -70,6 +73,10 @@ public class LoginController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("jwtAccessToken", jwtAccessToken);
         headers.set("refreshTokenIndex", String.valueOf(refreshTokenIndex));
+        headers.set("nickname", member.getNickname());
+        headers.set("email", member.getNickname());
+        headers.set("field", preferenceFieldService.findField(member.getId()).getField());
+
 
         log.info("headers = {}", headers);
         log.info("headers jwtAccessToken = {}", headers.get("jwtAccessToken"));
