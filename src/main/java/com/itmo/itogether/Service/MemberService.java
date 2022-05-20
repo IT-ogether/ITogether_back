@@ -10,7 +10,6 @@ import com.itmo.itogether.Domain.Member;
 import com.itmo.itogether.Model.OAuthToken;
 import com.itmo.itogether.Repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,17 +25,10 @@ import java.util.Optional;
 @Service
 public class MemberService {
 
-    @Value("${kakao.clientId}")
-    private String clientId;
-
-    @Value("${kakao.redirectUri}")
-    private String redirectUri;
-
-    @Value("${kakao.reqTokenUrl}")
-    private String reqTokenUrl;
-
-    @Value("${kakao.reqUserDataUrl}")
-    private String reqUserDataUrl;
+    String clientId = "47ab909f259ea3b830cda220244509c2"; // 설정 필요
+    String redirectUri = "http://itogether.tk/oauth/kakao/callback"; // 설정 필요
+    String reqTokenUrl = "https://kauth.kakao.com/oauth/token";
+    String reqUserDataUrl = "https://kapi.kakao.com/v2/user/me";
 
     private final MemberRepository memberRepository;
 
@@ -134,5 +126,4 @@ public class MemberService {
 
         return memberRepository.findById(memberId);
     }
-
 }

@@ -26,7 +26,7 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
     }
 
     @Override
-//    @PostConstruct
+    @PostConstruct
     public void insertReviews() throws IOException {
         List<InformationDTO> informationDTO = findAllInfo();
         List<ReviewDTO> reviewDTO = new ArrayList<>();
@@ -44,6 +44,9 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
             jdbcInsert.execute(params);
         }
         deleteRedundancy(); // 중복 제거
+        updateIsCrawled(); // 크롤링을 진행한 information 체크 (이후 크롤링할 때 중복해서 크롤링하는 것을 방지하기 위함)
+
+        System.out.println("크롤링 종료");
     }
 
     @Override
@@ -64,5 +67,10 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
     @Override
     public void deleteRedundancy() {
         jdbcTemplate.execute("DELETE FROM review WHERE review_id NOT IN ( SELECT review_id FROM ( SELECT review_id FROM review GROUP BY title) AS review_id)");
+    }
+
+    @Override
+    public void updateIsCrawled() {
+        jdbcTemplate.execute("UPDATE information SET is_crawled = 1");
     }
 }

@@ -65,8 +65,8 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public List<MainInformationDTO> searchKeyword(String keyword) {
-        return informationRepository.searchKeyword(keyword);
+    public List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum) {
+        return informationRepository.searchKeyword(keyword, pageNum, perPageNum);
     }
 
     @Override
@@ -85,5 +85,10 @@ public class InformationServiceImpl implements InformationService {
             return informationRepository.countContestInfo();
         }
         return 0;
+    }
+
+    @Override
+    public int countKeywordInfo(String keyword) {
+        return informationRepository.countKeywordInfo(keyword);
     }
 }
