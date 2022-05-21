@@ -2,31 +2,27 @@ package com.itmo.itogether.Service;
 
 import com.itmo.itogether.DTO.DetailInformationDTO;
 import com.itmo.itogether.DTO.MainInformationDTO;
+import com.itmo.itogether.DTO.ReviewDTO;
 import com.itmo.itogether.Domain.Information;
-import com.itmo.itogether.Domain.Review;
 
 import java.util.List;
 
 public interface InformationService {
     List<Information> findPopularInfo();
 
-    List<MainInformationDTO> findAllClub(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllClub();
 
-    List<MainInformationDTO> findAllEducation(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllEducation();
 
-    List<MainInformationDTO> findAllSeminar(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllSeminar();
 
-    List<MainInformationDTO> findAllCertificate(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllCertificate();
 
-    List<MainInformationDTO> findAllKdt(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllKdt();
 
-    List<MainInformationDTO> findAllContest(int pageNum, int perPageNum);
+    List<MainInformationDTO> findAllContest();
 
     DetailInformationDTO findByInfoId(int informationId);
 
-    List<Review> findReviewById(int informationId);
-
-    List<MainInformationDTO> searchKeyword(String keyword);
-  
-    int countInfo(int categoryId);
+    List<ReviewDTO> findReviewById(int informationId);
 }

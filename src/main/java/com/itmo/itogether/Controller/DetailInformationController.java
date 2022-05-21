@@ -2,7 +2,6 @@ package com.itmo.itogether.Controller;
 
 import com.itmo.itogether.Service.InformationServiceImpl;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +31,6 @@ public class DetailInformationController {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        return new ResponseEntity<>(map, header, HttpStatus.OK);
+        return new ResponseEntity<>(map, header, 200);
     }
 }
