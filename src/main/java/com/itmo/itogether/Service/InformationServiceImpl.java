@@ -61,12 +61,7 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public List<Review> findReviewById(int informationId) {
+    public List<ReviewDTO> findReviewById(int informationId) {
         return informationRepository.findReviewById(informationId);
-    }
-
-    @Override
-    public List<MainInformationDTO> searchKeyword(String keyword) {
-        return informationRepository.searchKeyword(keyword);
     }
 }

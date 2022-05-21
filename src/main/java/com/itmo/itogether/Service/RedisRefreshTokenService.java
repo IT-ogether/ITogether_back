@@ -17,23 +17,23 @@ public class RedisRefreshTokenService {
         this.redisTemplate = redisTemplate;
     }
 
-    public String getRedisRefreshTokenValue(Integer refreshTokenIndex) {
+    public String getRedisRefreshTokenValue(String refreshToken) {
 
-        ValueOperations<Integer, String> refreshTokenValueOperations = redisTemplate.opsForValue();
+        ValueOperations<String, String> refreshTokenValueOperations = redisTemplate.opsForValue();
 
-        return refreshTokenValueOperations.get(refreshTokenIndex);
+        return refreshTokenValueOperations.get(refreshToken);
     }
 
-    public void setRedisRefreshTokenValue(Integer refreshTokenIndex, String refreshToken) {
+    public void setRedisRefreshTokenValue(String refreshToken, String nickname) {
 
-        ValueOperations<Integer, String> refreshTokenValueOperations = redisTemplate.opsForValue();
-        refreshTokenValueOperations.set(refreshTokenIndex, refreshToken, Duration.ofDays(14));
+        ValueOperations<String, String> refreshTokenValueOperations = redisTemplate.opsForValue();
+        refreshTokenValueOperations.set(refreshToken, nickname, Duration.ofDays(14));
     }
 
 
-//    public boolean isExistRefreshToken(String refreshToken) {
-//        return getRedisRefreshTokenValue(refreshToken) != null;
-//    }
+    public boolean isExistRefreshToken(String refreshToken) {
+        return getRedisRefreshTokenValue(refreshToken) != null;
+    }
 
     public boolean deleteRefreshToken(String refreshToken) {
         return redisTemplate.delete(refreshToken);
