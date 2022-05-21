@@ -6,6 +6,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -17,8 +18,11 @@ import java.util.Map;
 @Service
 public class JwtUtils {
 
-    private final String SECRET_KEY = "PKuqug3YctsBr0Kv0DZeWcGstNRe9Vsc"; // 설정 필요
-    private final String REFRESH_KEY = "miuXdbBehAQwNZ5QGMk2ftRlHM3atoyG"; // 설정 필요
+    @Value("${my.jwt.secretKey}")
+    private String SECRET_KEY;
+
+    @Value("${my.jwt.refreshKey}")
+    private String REFRESH_KEY;
     public String createJwt(Member member) {
 
         Map<String, Object> headers = new HashMap<>();
