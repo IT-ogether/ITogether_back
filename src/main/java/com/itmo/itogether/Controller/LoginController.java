@@ -5,66 +5,76 @@ import com.itmo.itogether.Domain.Member;
 import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
 import com.itmo.itogether.Service.RedisRefreshTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LoginController {
 
     private final MemberService ms;
     private final JwtUtils jwtUtils;
-
-    @Autowired
-    public LoginController(MemberService ms, JwtUtils jwtUtils) {
-        this.ms = ms;
-        this.jwtUtils = jwtUtils;
-    }
-
-    @Autowired
     private RedisRefreshTokenService redisRefreshTokenService;
 
+    private static int refreshTokenIndex = 0;
+
+    public LoginController(MemberService ms, JwtUtils jwtUtils, RedisRefreshTokenService redisRefreshTokenService) {
+        this.ms = ms;
+        this.jwtUtils = jwtUtils;
+        this.redisRefreshTokenService = redisRefreshTokenService;
+    }
+
     @PostMapping("/oauth/kakao/login")
-    public Map<String, Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
+    public ResponseEntity<Object> kakaoCallback(@RequestParam(value = "code", required = false) String code) throws JsonProcessingException, UnsupportedEncodingException {
+
+        log.info("authorizationCode={}", code);
 
         String accessToken = ms.getAccessToken(code);
+        log.info("getAccessToken 진입 후 받아 온 accessToken = {}", accessToken);
+
         HashMap<String, Object> userInfo = ms.getUserInfo(accessToken);
 
         Member member = new Member();
-        member.setId(Long.parseLong(userInfo.get("id").toString()));
+        member.setId(Long.parseLong(userInfo.get("id").toString())-10000);
         member.setNickname(userInfo.get("nickname").toString());
         member.setEmail(userInfo.get("email").toString());
-
+        member.setProfileImage(userInfo.get("profileImage").toString());
 
         Boolean isMemberPresent = ms.findMemberById(member.getId()).isPresent();
 
-        if (isMemberPresent == false) {
+        if(isMemberPresent == false) {
             ms.join(member);
-        } else {
-            System.out.println("The member is already sign up");
+        }
+        else {
+            log.info("The member is already sign up");
         }
 
         String jwtAccessToken = jwtUtils.createJwt(member);
         String refreshToken = jwtUtils.createRefreshToken(member);
 
-        Map<String, Object> tokens = new HashMap<>();
-        tokens.put("memberId", member.getId());
-        tokens.put("nickName", member.getNickname());
-        tokens.put("email", member.getEmail());
-        tokens.put("jwtAccessToken", jwtAccessToken);
-        tokens.put("refreshToken", refreshToken);
+        AtomicInteger count = new AtomicInteger(refreshTokenIndex);
+        redisRefreshTokenService.setRedisRefreshTokenValue(count.getAndIncrement(), refreshToken);
+        refreshTokenIndex = count.get();
 
-        redisRefreshTokenService.setRedisRefreshTokenValue(refreshToken, member.getNickname());
+        log.info("refreshTokenIndex = {}", refreshTokenIndex);
+        log.info("refreshToken = {}" + refreshToken);
 
-        return tokens;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("jwtAccessToken", jwtAccessToken);
+        headers.set("refreshTokenIndex", String.valueOf(refreshTokenIndex));
+
+        log.info("headers = {}", headers);
+        log.info("headers jwtAccessToken = {}", headers.get("jwtAccessToken"));
+        log.info("headers refreshTokenIndex" + headers.get("refreshTokenIndex"));
+
+        return new ResponseEntity<>("로그인 성공", headers, HttpStatus.OK);
     }
-
-
 }
