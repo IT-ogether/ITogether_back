@@ -134,6 +134,3 @@ public class MemberService {
 
         return memberRepository.findById(memberId);
     }
-
-}
-

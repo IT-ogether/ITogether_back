@@ -10,21 +10,25 @@ import java.util.List;
 public interface InformationService {
     List<Information> findPopularInfo();
 
-    List<MainInformationDTO> findAllClub();
+    List<MainInformationDTO> findAllClub(int pageNum, int perPageNum);
 
-    List<MainInformationDTO> findAllEducation();
+    List<MainInformationDTO> findAllEducation(int pageNum, int perPageNum);
 
-    List<MainInformationDTO> findAllSeminar();
+    List<MainInformationDTO> findAllSeminar(int pageNum, int perPageNum);
 
-    List<MainInformationDTO> findAllCertificate();
+    List<MainInformationDTO> findAllCertificate(int pageNum, int perPageNum);
 
-    List<MainInformationDTO> findAllKdt();
+    List<MainInformationDTO> findAllKdt(int pageNum, int perPageNum);
 
-    List<MainInformationDTO> findAllContest();
+    List<MainInformationDTO> findAllContest(int pageNum, int perPageNum);
 
     DetailInformationDTO findByInfoId(int informationId);
 
     List<Review> findReviewById(int informationId);
 
-    List<MainInformationDTO> searchKeyword(String keyword);
+    List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum);
+
+    int countInfo(int categoryId);
+
+    int countKeywordInfo(String keyword);
 }

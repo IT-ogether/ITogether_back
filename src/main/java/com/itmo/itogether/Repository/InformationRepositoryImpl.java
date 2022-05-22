@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 @Repository
 public class InformationRepositoryImpl implements InformationRepository {
 
@@ -108,7 +110,7 @@ public class InformationRepositoryImpl implements InformationRepository {
     }
 
     @Override
-    public List<MainInformationDTO> findAllClub() {
+    public List<MainInformationDTO> findAllClub(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -116,11 +118,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 1"), MainInfoMapper());
+                                      "WHERE I.category_id = 1 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> findAllEducation() {
+    public List<MainInformationDTO> findAllEducation(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -128,11 +131,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 2"), MainInfoMapper());
+                                      "WHERE I.category_id = 2 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> findAllSeminar() {
+    public List<MainInformationDTO> findAllSeminar(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -140,11 +144,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 3"), MainInfoMapper());
+                                      "WHERE I.category_id = 3 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> findAllCertificate() {
+    public List<MainInformationDTO> findAllCertificate(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -152,11 +157,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 4"), MainInfoMapper());
+                                      "WHERE I.category_id = 4 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> findAllKdt() {
+    public List<MainInformationDTO> findAllKdt(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -164,11 +170,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 5"), MainInfoMapper());
+                                      "WHERE I.category_id = 5 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> findAllContest() {
+    public List<MainInformationDTO> findAllContest(int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -176,11 +183,12 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.category_id = 6"), MainInfoMapper());
+                                      "WHERE I.category_id = 6 " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), pageNum, perPageNum);
     }
 
     @Override
-    public List<MainInformationDTO> searchKeyword(String keyword) {
+    public List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -188,7 +196,8 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.information_title like ?"), new Object[]{"%"+keyword+"%"}, MainInfoMapper());
+                                      "WHERE I.information_title like ?" +
+                                      "LIMIT ?, ?"), MainInfoMapper(), "%" + keyword + "%", pageNum, perPageNum);
     }
 
     private RowMapper<MainInformationDTO> MainInfoMapper() {
@@ -207,5 +216,40 @@ public class InformationRepositoryImpl implements InformationRepository {
 
             return mainInformationDTO;
         };
+    }
+
+    @Override
+    public int countClubInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 1", int.class);
+    }
+
+    @Override
+    public int countEducationInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 2", int.class);
+    }
+
+    @Override
+    public int countSeminarInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 3", int.class);
+    }
+
+    @Override
+    public int countCertificateInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 4", int.class);
+    }
+
+    @Override
+    public int countKdtInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 5", int.class);
+    }
+
+    @Override
+    public int countContestInfo() {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 6", int.class);
+    }
+
+    @Override
+    public int countKeywordInfo(String keyword) {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.information_title like ?", int.class, "%" + keyword + "%");
     }
 }
