@@ -9,4 +9,5 @@ public interface ReviewCrawlingRepository {
     void insertReviews() throws IOException;
     List<InformationDTO> findAllInfo();
     void deleteRedundancy();
+    void updateIsCrawled();
 }
