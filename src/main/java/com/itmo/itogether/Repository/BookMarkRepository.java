@@ -5,6 +5,7 @@ import com.itmo.itogether.DTO.GetMarkRequest;
 import com.itmo.itogether.DTO.GetMarkResponse;
 import com.itmo.itogether.DTO.PostMarkRequest;
 import com.itmo.itogether.Domain.Favorite;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@Slf4j
 public class BookMarkRepository {
 
     @Autowired
@@ -42,7 +45,7 @@ public class BookMarkRepository {
     public List<GetMarkResponse> getBookInfo(GetMarkRequest dto) {
 
         Long memberId=dto.getMemberId();
-        System.out.println(memberId);
+        log.info("memberId={}", memberId);
 
         List<Integer> id=jdbcTemplate.query("SELECT A.information_id " + "FROM favorite as A " +
                 "WHERE A.member_id = ?;", new RowMapper<Integer>() {
@@ -53,22 +56,27 @@ public class BookMarkRepository {
             }
         }, memberId);
 
-        for(int i=0;i<id.size();i++){
-            System.out.println(id.get(i));
+        if(id.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            for(int i=0;i<id.size();i++){
+                System.out.println(id.get(i));
+            }
+
+            String param=String.join(",",id.stream().map(i->i+"").collect(Collectors.toList()));
+
+            System.out.println(param);
+
+            return jdbcTemplate.query(
+                    String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
+                            "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
+                            "where recruitment_field.information_id=I.information_id)= 0 then ' ' " +
+                            "else (select group_concat(field.field_name) from field inner join recruitment_field " +
+                            "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
+                            "FROM information as I " +
+                            "WHERE I.information_id In (%s);",param),getBookInfoMapper());
+
         }
-
-        String param=String.join(",",id.stream().map(i->i+"").collect(Collectors.toList()));
-
-        System.out.println(param);
-
-        return jdbcTemplate.query(
-                String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
-                        "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
-                        "where recruitment_field.information_id=I.information_id)= 0 then ' ' " +
-                        "else (select group_concat(field.field_name) from field inner join recruitment_field " +
-                        "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
-                        "FROM information as I " +
-                        "WHERE I.information_id In (%s);",param),getBookInfoMapper());
 
     }
 
@@ -102,6 +110,5 @@ public class BookMarkRepository {
         f.setInformationId(dto.getInformationId());
 
         jdbcTemplate.update("DELETE FROM favorite WHERE member_id=? AND information_id=?;",f.getMemberId(),f.getInformationId());
-
     }
 }

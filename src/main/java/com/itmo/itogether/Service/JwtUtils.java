@@ -6,6 +6,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class JwtUtils {
 
     @Value("${my.jwt.secretKey}")
@@ -86,10 +88,11 @@ public class JwtUtils {
 
     public boolean validateToken(String token) throws ExpiredJwtException {
         try {
+            getIdFromToken(token);
+            log.info("token={}", token);
             return true;
         } catch (ExpiredJwtException e) {
             // 토큰 만료되었을 경우
-            System.out.println(e);
             return false;
         } catch (Exception e) {
             // 나머지 에러

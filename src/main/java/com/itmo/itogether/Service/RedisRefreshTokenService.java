@@ -31,9 +31,9 @@ public class RedisRefreshTokenService {
     }
 
 
-//    public boolean isExistRefreshToken(String refreshToken) {
-//        return getRedisRefreshTokenValue(refreshToken) != null;
-//    }
+    public boolean isExistRefreshToken(Integer refreshTokenIndex) {
+        return getRedisRefreshTokenValue(refreshTokenIndex) != null;
+    }
 
     public boolean deleteRefreshToken(String refreshToken) {
         return redisTemplate.delete(refreshToken);
