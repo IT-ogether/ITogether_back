@@ -26,7 +26,7 @@ public class ReviewCrawlingRepositoryImpl implements ReviewCrawlingRepository {
     }
 
     @Override
-    @PostConstruct
+    //@PostConstruct
     public void insertReviews() throws IOException {
         List<InformationDTO> informationDTO = findAllInfo();
         List<ReviewDTO> reviewDTO = new ArrayList<>();
