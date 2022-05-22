@@ -93,7 +93,7 @@ public class InformationRepositoryImpl implements InformationRepository {
     @Override
     public List<Review> findReviewById(int informationId) {
         return jdbcTemplate.query(
-                String.format("SELECT review.title, review.url, review.site FROM review WHERE review.information_id = ?", informationId), ReviewMapper());
+                String.format("SELECT review.title, review.url, review.site FROM review WHERE review.information_id = ?"), ReviewMapper(), informationId);
     }
 
     private RowMapper<Review> ReviewMapper() {
@@ -188,7 +188,7 @@ public class InformationRepositoryImpl implements InformationRepository {
     }
 
     @Override
-    public List<MainInformationDTO> searchKeyword(String keyword) {
+    public List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum) {
         return jdbcTemplate.query(
                 String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
                                       "(case when (select Count(recruitment_field.information_id) from recruitment_field " +
@@ -196,7 +196,8 @@ public class InformationRepositoryImpl implements InformationRepository {
                                       "else (select group_concat(field.field_name) from field inner join recruitment_field " +
                                       "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) end) as field " +
                                       "FROM information as I " +
-                                      "WHERE I.information_title like ?"), new Object[]{"%" + keyword + "%"}, MainInfoMapper());
+                                      "WHERE I.information_title like ?" +
+                                      "LIMIT ?, ?"), MainInfoMapper(), "%" + keyword + "%", pageNum, perPageNum);
     }
 
     private RowMapper<MainInformationDTO> MainInfoMapper() {
@@ -245,5 +246,10 @@ public class InformationRepositoryImpl implements InformationRepository {
     @Override
     public int countContestInfo() {
         return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 6", int.class);
+    }
+
+    @Override
+    public int countKeywordInfo(String keyword) {
+        return jdbcTemplate.queryForObject("select count(information_id) from information where information.information_title like ?", int.class, "%" + keyword + "%");
     }
 }

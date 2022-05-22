@@ -29,6 +29,8 @@ public class DetailInformationController {
         map.put("detailInfo", informationService.findByInfoId(informationId));
         map.put("reviews", informationService.findReviewById(informationId));
 
+        System.out.println(map);
+
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 

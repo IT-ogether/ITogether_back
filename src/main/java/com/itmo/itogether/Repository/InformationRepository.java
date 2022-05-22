@@ -27,8 +27,7 @@ public interface InformationRepository {
 
     List<Review> findReviewById(int informationId);
 
-    List<MainInformationDTO> searchKeyword(String keyword);
-
+    List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum);
 
     int countClubInfo();
 
@@ -41,5 +40,7 @@ public interface InformationRepository {
     int countKdtInfo();
 
     int countContestInfo();
+
+    int countKeywordInfo(String keyword);
 
 }
