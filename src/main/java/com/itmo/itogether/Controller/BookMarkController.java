@@ -1,11 +1,10 @@
 package com.itmo.itogether.Controller;
 
-import com.itmo.itogether.DTO.DeleteRequest;
-import com.itmo.itogether.DTO.GetMarkRequest;
-import com.itmo.itogether.DTO.GetMarkResponse;
-import com.itmo.itogether.DTO.PostMarkRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.itmo.itogether.DTO.*;
 import com.itmo.itogether.Service.BookMarkService;
 import com.itmo.itogether.Service.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/bookmarks")
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class BookMarkController {
 
@@ -33,9 +33,8 @@ public class BookMarkController {
         this.jwtUtils = jwtUtils;
     }
 
-    @ResponseBody
     @PostMapping()
-    public ResponseEntity postBookMark(@RequestHeader(value = "token") String token, @RequestParam(value = "informationId") int informationId) {
+    public ResponseEntity<Object> postBookMark(@RequestHeader(value = "token") String token, @RequestBody InformationIdDTO informationIdDTO) throws JsonProcessingException {
 
         System.out.println(token);
         if(jwtUtils.validateToken(token)) {
@@ -44,9 +43,9 @@ public class BookMarkController {
             String memberId = "";
             memberId = jwtUtils.getIdFromToken(token);
 
-            System.out.println("memberId: " + memberId);
-            System.out.println("informationId: " + informationId);
-            PostMarkRequest postMarkRequest = new PostMarkRequest(Long.valueOf(memberId), Integer.valueOf(informationId));
+            log.info("member={}", memberId);
+            log.info("infoID={}", informationIdDTO.getInformationId());
+            PostMarkRequest postMarkRequest = new PostMarkRequest(Long.valueOf(memberId), informationIdDTO.getInformationId());
             bookMarkService.postMark(postMarkRequest);
 
             return new ResponseEntity<>("Success", HttpStatus.OK);
