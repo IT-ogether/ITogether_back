@@ -30,10 +30,6 @@ public class MainInformationController {
 
     @GetMapping("/club")
     public ResponseEntity<Object> findAllClub(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -52,10 +48,6 @@ public class MainInformationController {
 
     @GetMapping("/education")
     public ResponseEntity<Object> findAllEducation(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -74,10 +66,6 @@ public class MainInformationController {
 
     @GetMapping("/seminar")
     public ResponseEntity<Object> findAllSeminar(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -96,10 +84,6 @@ public class MainInformationController {
 
     @GetMapping("/certificate")
     public ResponseEntity<Object> findAllCertificate(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -118,10 +102,6 @@ public class MainInformationController {
 
     @GetMapping("/kdt")
     public ResponseEntity<Object> findAllKdt(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -140,10 +120,6 @@ public class MainInformationController {
 
     @GetMapping("/contest")
     public ResponseEntity<Object> findAllContest(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
-        if (pageNum == 0) {
-            pageNum = 1;
-        }
-
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> map = new HashMap<>();
@@ -153,6 +129,24 @@ public class MainInformationController {
         pageDTO.setTotalCount(informationService.countInfo(6));
 
         List<MainInformationDTO> mainInformationDTOS = informationService.findAllContest((pageNum - 1) * perPageNum, criteriaDTO.getPerPageNum());
+
+        map.put("mainInfo", mainInformationDTOS);
+        map.put("pageDTO", pageDTO);
+
+        return new ResponseEntity<>(map, header, HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<Object> findByField(@RequestParam String field, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum) throws SQLException {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> map = new HashMap<>();
+        CriteriaDTO criteriaDTO = new CriteriaDTO(pageNum, perPageNum);
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setCri(criteriaDTO);
+        pageDTO.setTotalCount(informationService.countFieldInfo(field));
+
+        List<MainInformationDTO> mainInformationDTOS = informationService.findByField(field, (pageNum - 1) * perPageNum, criteriaDTO.getPerPageNum());
 
         map.put("mainInfo", mainInformationDTOS);
         map.put("pageDTO", pageDTO);

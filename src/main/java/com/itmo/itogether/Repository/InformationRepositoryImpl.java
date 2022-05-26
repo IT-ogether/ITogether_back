@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
-
 @Repository
 public class InformationRepositoryImpl implements InformationRepository {
 
@@ -219,6 +217,17 @@ public class InformationRepositoryImpl implements InformationRepository {
     }
 
     @Override
+    public List<MainInformationDTO> findByField(String field, int pageNum, int perPageNum) {
+        return jdbcTemplate.query(
+                String.format("SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
+                                      "(select group_concat(field.field_name) from field inner join recruitment_field " +
+                                      "where I.information_id=recruitment_field.information_id and field.field_id=recruitment_field.field_id) as field " +
+                                      "FROM information as I " +
+                                      "HAVING field LIKE ? " +
+                                      "LIMIT ?, ?"), MainInfoMapper(), "%" + field + "%", pageNum, perPageNum);
+    }
+
+    @Override
     public int countClubInfo() {
         return jdbcTemplate.queryForObject("select count(information_id) from information where information.category_id = 1", int.class);
     }
@@ -251,5 +260,15 @@ public class InformationRepositoryImpl implements InformationRepository {
     @Override
     public int countKeywordInfo(String keyword) {
         return jdbcTemplate.queryForObject("select count(information_id) from information where information.information_title like ?", int.class, "%" + keyword + "%");
+    }
+
+    @Override
+    public int countFieldInfo(String field) {
+        return jdbcTemplate.queryForObject("SELECT count(R.information_id) FROM " +
+                                                   "(SELECT I.information_id, I.information_title, I.logo, I.recruitment_period, " +
+                                                   "(SELECT group_concat(field.field_name) FROM field INNER JOIN recruitment_field " +
+                                                   "WHERE I.information_id=recruitment_field.information_id AND field.field_id=recruitment_field.field_id) AS field " +
+                                                   "FROM information I " +
+                                                   "HAVING field LIKE ?) R", int.class, "%" + field + "%");
     }
 }

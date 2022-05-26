@@ -2,7 +2,8 @@ package com.itmo.itogether.Service;
 
 import com.itmo.itogether.DTO.DetailInformationDTO;
 import com.itmo.itogether.DTO.MainInformationDTO;
-import com.itmo.itogether.Domain.*;
+import com.itmo.itogether.Domain.Information;
+import com.itmo.itogether.Domain.Review;
 import com.itmo.itogether.Repository.InformationRepository;
 import org.springframework.stereotype.Service;
 
@@ -70,6 +71,11 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
+    public List<MainInformationDTO> findByField(String field, int pageNum, int perPageNum) {
+        return informationRepository.findByField(field, pageNum, perPageNum);
+    }
+
+    @Override
     public int countInfo(int categoryId) {
         if (categoryId == 1) {
             return informationRepository.countClubInfo();
@@ -90,5 +96,10 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public int countKeywordInfo(String keyword) {
         return informationRepository.countKeywordInfo(keyword);
+    }
+
+    @Override
+    public int countFieldInfo(String field) {
+        return informationRepository.countFieldInfo(field);
     }
 }

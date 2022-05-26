@@ -29,6 +29,8 @@ public interface InformationRepository {
 
     List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum);
 
+    List<MainInformationDTO> findByField(String keyword, int pageNum, int perPageNum);
+
     int countClubInfo();
 
     int countEducationInfo();
@@ -42,5 +44,7 @@ public interface InformationRepository {
     int countContestInfo();
 
     int countKeywordInfo(String keyword);
+
+    int countFieldInfo(String field);
 
 }
