@@ -2,6 +2,7 @@ package com.itmo.itogether.Controller;
 
 import com.itmo.itogether.Domain.Information;
 import com.itmo.itogether.Service.InformationServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import java.util.List;
 
 
 @RestController
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class HomeController {
 
@@ -27,6 +29,7 @@ public class HomeController {
 
     @GetMapping("/popularity")
     public ResponseEntity<Object> Home() {
+        log.info("popularity 정보");
         List<Information> popularInfo = informationService.findPopularInfo();
 
         HttpHeaders header = new HttpHeaders();
