@@ -5,7 +5,6 @@ import com.itmo.itogether.Domain.Member;
 import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.MemberService;
 import com.itmo.itogether.Service.PreferenceFieldService;
-import com.itmo.itogether.Service.RedisRefreshTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,15 +22,13 @@ public class LoginController {
 
     private final MemberService ms;
     private final JwtUtils jwtUtils;
-    private RedisRefreshTokenService redisRefreshTokenService;
     private PreferenceFieldService preferenceFieldService;
 
     private static int refreshTokenIndex = 0;
 
-    public LoginController(MemberService ms, JwtUtils jwtUtils, RedisRefreshTokenService redisRefreshTokenService, PreferenceFieldService preferenceFieldService) {
+    public LoginController(MemberService ms, JwtUtils jwtUtils, PreferenceFieldService preferenceFieldService) {
         this.ms = ms;
         this.jwtUtils = jwtUtils;
-        this.redisRefreshTokenService = redisRefreshTokenService;
         this.preferenceFieldService = preferenceFieldService;
     }
 
@@ -64,7 +61,6 @@ public class LoginController {
         String refreshToken = jwtUtils.createRefreshToken(member);
 
         AtomicInteger count = new AtomicInteger(refreshTokenIndex);
-        redisRefreshTokenService.setRedisRefreshTokenValue(count.getAndIncrement(), refreshToken);
         refreshTokenIndex = count.get();
 
         log.info("refreshTokenIndex = {}", refreshTokenIndex);
