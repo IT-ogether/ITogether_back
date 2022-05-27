@@ -37,7 +37,6 @@ public class BookMarkRepository {
         f.setMemberId(dto.getMemberId());
         f.setInformationId(dto.getInformationId());
 
-        System.out.println(f.getInformationId()+f.getMemberId());
         jdbcTemplate.update("insert into favorite values(?,?);",f.getInformationId(),f.getMemberId());
 
     }
@@ -60,7 +59,7 @@ public class BookMarkRepository {
             return new ArrayList<>();
         } else {
             for(int i=0;i<id.size();i++){
-                System.out.println(id.get(i));
+                log.info("i={}", id.get(i));
             }
 
             String param=String.join(",",id.stream().map(i->i+"").collect(Collectors.toList()));
@@ -85,9 +84,8 @@ public class BookMarkRepository {
             List<String> field;
             String[] empty_field=new String[0];
 
-
             int info_id=rs.getInt("information_id");
-            System.out.println(info_id);
+            log.info("infoId={}", info_id);
             String title=rs.getString("information_title");
             String logo=rs.getString("logo");
             String recruitment=rs.getString("recruitment_period");
