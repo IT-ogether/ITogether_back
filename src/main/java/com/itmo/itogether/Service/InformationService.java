@@ -28,7 +28,11 @@ public interface InformationService {
 
     List<MainInformationDTO> searchKeyword(String keyword, int pageNum, int perPageNum);
 
+    List<MainInformationDTO> findByField(String field, int pageNum, int perPageNum);
+
     int countInfo(int categoryId);
 
     int countKeywordInfo(String keyword);
+
+    int countFieldInfo(String field);
 }
