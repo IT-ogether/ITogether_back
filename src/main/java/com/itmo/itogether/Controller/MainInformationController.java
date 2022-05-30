@@ -143,6 +143,38 @@ public class MainInformationController {
         Map<String, Object> map = new HashMap<>();
         CriteriaDTO criteriaDTO = new CriteriaDTO(pageNum, perPageNum);
         PageDTO pageDTO = new PageDTO();
+        switch (field) {
+            case "frontend":
+                field = "프론트엔드";
+                break;
+            case "backend":
+                field = "백엔드";
+                break;
+            case "android":
+                field = "안드로이드";
+                break;
+            case "AI":
+                field = "인공지능";
+                break;
+            case "data-processing":
+                field = "데이터처리";
+                break;
+            case "algorithm":
+                field = "알고리즘";
+                break;
+            case "designer":
+                field = "디자이너";
+                break;
+            case "cloud-computing":
+                field = "클라우드 컴퓨팅";
+                break;
+            case "database":
+                field = "데이터베이스";
+                break;
+            case "security":
+                field = "보안";
+                break;
+        }
         pageDTO.setCri(criteriaDTO);
         pageDTO.setTotalCount(informationService.countFieldInfo(field));
 

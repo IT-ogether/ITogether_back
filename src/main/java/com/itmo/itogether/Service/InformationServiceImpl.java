@@ -77,18 +77,19 @@ public class InformationServiceImpl implements InformationService {
 
     @Override
     public int countInfo(int categoryId) {
-        if (categoryId == 1) {
-            return informationRepository.countClubInfo();
-        } else if (categoryId == 2) {
-            return informationRepository.countEducationInfo();
-        } else if (categoryId == 3) {
-            return informationRepository.countSeminarInfo();
-        } else if (categoryId == 4) {
-            return informationRepository.countCertificateInfo();
-        } else if (categoryId == 5) {
-            return informationRepository.countKdtInfo();
-        } else if (categoryId == 6) {
-            return informationRepository.countContestInfo();
+        switch (categoryId) {
+            case 1:
+                return informationRepository.countClubInfo();
+            case 2:
+                return informationRepository.countEducationInfo();
+            case 3:
+                return informationRepository.countSeminarInfo();
+            case 4:
+                return informationRepository.countCertificateInfo();
+            case 5:
+                return informationRepository.countKdtInfo();
+            case 6:
+                return informationRepository.countContestInfo();
         }
         return 0;
     }
