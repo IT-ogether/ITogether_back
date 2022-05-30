@@ -4,9 +4,13 @@ import com.itmo.itogether.Service.JwtUtils;
 import com.itmo.itogether.Service.PreferenceFieldService;
 import com.itmo.itogether.Service.RecommendationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.Charset;
 
 @RestController
 @Slf4j
@@ -32,11 +36,13 @@ public class RecommendationController {
             memberId = jwtUtils.getIdFromToken(token);
             log.info("id={}", memberId);
             String field = preferenceFieldService.findField(Long.parseLong(memberId)).getField();
+            HttpHeaders header = new HttpHeaders();
+            header.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
             if(field == null) {
                 field = "sum_count";
-                return new ResponseEntity<>(recommendationService.findRecommendation(field), HttpStatus.OK);
+                return new ResponseEntity<>(recommendationService.findRecommendation(field), header, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(recommendationService.findRecommendation(field), HttpStatus.OK);
+                return new ResponseEntity<>(recommendationService.findRecommendation(field), header, HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
