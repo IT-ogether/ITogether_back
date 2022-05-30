@@ -4,6 +4,7 @@ import com.itmo.itogether.DTO.CriteriaDTO;
 import com.itmo.itogether.DTO.MainInformationDTO;
 import com.itmo.itogether.DTO.PageDTO;
 import com.itmo.itogether.Service.InformationServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/main-info")
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MainInformationController {
 
@@ -143,6 +145,7 @@ public class MainInformationController {
         Map<String, Object> map = new HashMap<>();
         CriteriaDTO criteriaDTO = new CriteriaDTO(pageNum, perPageNum);
         PageDTO pageDTO = new PageDTO();
+        log.info("field={}", field);
         switch (field) {
             case "frontend":
                 field = "프론트엔드";
@@ -182,6 +185,7 @@ public class MainInformationController {
 
         map.put("mainInfo", mainInformationDTOS);
         map.put("pageDTO", pageDTO);
+        log.info("mainInfo={}", mainInformationDTOS);
 
         return new ResponseEntity<>(map, header, HttpStatus.OK);
     }
